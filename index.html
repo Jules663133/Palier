@@ -21,13 +21,37 @@
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0}
+  html,body{height:100%;overflow:hidden}
   body{
     background:var(--paper);color:var(--ink);
     font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     font-feature-settings:"tnum" 1;-webkit-font-smoothing:antialiased;
-    padding:max(26px,env(safe-area-inset-top)) 24px calc(40px + env(safe-area-inset-bottom));
-    max-width:440px;margin:0 auto;min-height:100vh;
+    max-width:440px;margin:0 auto;
   }
+  .snap-wrap{
+    height:100svh;overflow-y:scroll;
+    scroll-snap-type:y mandatory;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .snap-wrap::-webkit-scrollbar{display:none}
+  .snap-page{
+    scroll-snap-align:start;
+    min-height:100svh;
+    padding:max(26px,env(safe-area-inset-top)) 24px 24px;
+    box-sizing:border-box;
+  }
+  .page-stats{
+    padding-top:32px;
+    padding-bottom:calc(24px + env(safe-area-inset-bottom));
+  }
+  .scroll-hint{
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    padding-top:10px;color:var(--faint);font-size:9.5px;letter-spacing:.12em;
+    text-transform:uppercase;
+  }
+  .scroll-hint svg{animation:bounce .9s ease-in-out infinite alternate}
+  @keyframes bounce{from{transform:translateY(0)}to{transform:translateY(5px)}}
   .eyebrow{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--faint);font-weight:600}
   h1{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:40px;line-height:.95;margin:8px 0 0;letter-spacing:.01em}
   .sub{color:var(--muted);font-size:13px;margin:6px 0 34px}
@@ -99,7 +123,7 @@
   .today{margin-top:14px;font-size:12px;color:var(--muted)} .today b{color:var(--ink);font-weight:600}
 
   /* stats — ligne unique */
-  .stats{display:flex;justify-content:space-between;margin-top:max(60px,calc(100svh - 700px));border-top:1px solid var(--hair);
+  .stats{display:flex;justify-content:space-between;border-top:1px solid var(--hair);
          border-bottom:1px solid var(--hair);padding:16px 0;margin-bottom:24px}
   .stat{text-align:center;flex:1}
   .stat .v{font-family:"Instrument Serif",serif;font-size:22px}
@@ -141,6 +165,9 @@
 </style>
 </head>
 <body>
+<div class="snap-wrap">
+  <!-- PAGE 1 : principal -->
+  <div class="snap-page page-main">
   <div class="heads">
     <div class="head pat"><div class="tag">Patients</div><div class="num" id="patNum">0</div></div>
     <div class="head money"><div class="tag">Argent</div><div class="num" id="moneyNum">0&nbsp;€</div></div>
@@ -174,6 +201,13 @@
     <div class="today">Aujourd'hui · <b id="todayMoney">0&nbsp;€</b></div>
   </div>
 
+    <div class="scroll-hint">
+      <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+  </div><!-- /page-main -->
+
+  <!-- PAGE 2 : stats & historique -->
+  <div class="snap-page page-stats">
   <div class="stats">
     <div class="stat"><div class="v" id="sAvg">0</div><div class="k">Patients / j</div></div>
     <div class="stat"><div class="v" id="sNet">0&nbsp;€</div><div class="k">Net estimé</div></div>
@@ -183,6 +217,9 @@
     <summary><span>Historique</span><span id="histCount"></span></summary>
     <div id="hist"></div>
   </details>
+
+  </div><!-- /page-stats -->
+</div><!-- /snap-wrap -->
 
   <div id="modal" class="modal" hidden><div class="sheet" id="sheet"></div></div>
 
