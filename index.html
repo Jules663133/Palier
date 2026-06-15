@@ -331,31 +331,33 @@
 
     var moneyAvg=t.days>0?t.m/t.days:0;
 
-    // Ligne 1 : objectif patients — vert si moyenne/j >= cadence requise du palier
+    // Ligne 1 : objectif patients
     var fn1=true;
     PALIERS.forEach(function(pl,i){
       var el=document.getElementById("pp"+i);if(!el)return;
       var onPace=t.days>0&&avg>=pl.pday;
+      var rate=daysLeft>0?(Math.ceil((pl.patients-t.p)/daysLeft*10)/10).toFixed(1).replace(".",",")+" pts/j sur "+daysLeft+" j":"—";
       if(onPace){
-        el.innerHTML='<div class="pn">✓ '+pl.name+'</div>';el.className="pal-item on";
+        el.innerHTML='<div class="pn">✓ '+pl.name+'</div><div class="pr">'+rate+'</div>';
+        el.className="pal-item on";
       } else {
-        var rate=daysLeft>0?(Math.ceil((pl.patients-t.p)/daysLeft*10)/10).toFixed(1).replace(".",",")+" pts/j":"—";
-        el.innerHTML='<div class="pn">'+(fn1?"→ ":"")+pl.name+'</div><div class="pr">'+rate+" sur "+daysLeft+" j"+'</div>';
+        el.innerHTML='<div class="pn">'+(fn1?"→ ":"")+pl.name+'</div><div class="pr">'+rate+'</div>';
         el.className="pal-item"+(fn1?" next":"");fn1=false;
       }
     });
 
-    // Ligne 2 : objectif € — vert si revenus moyens/j >= montant quotidien requis du palier
+    // Ligne 2 : objectif €
     var fn2=true;
     PALIERS.forEach(function(pl,i){
       var el=document.getElementById("pm"+i);if(!el)return;
       var onPace=t.days>0&&moneyAvg>=(pl.money/TOTAL_DAYS);
+      var patsNeeded=(pl.money-t.m)/EUR_PER_PAT_PROJ;
+      var rate=daysLeft>0?(Math.ceil(patsNeeded/daysLeft*10)/10).toFixed(1).replace(".",",")+" pts/j sur "+daysLeft+" j":"—";
       if(onPace){
-        el.innerHTML='<div class="pn">✓ '+pl.name+'</div>';el.className="pal-item on";
+        el.innerHTML='<div class="pn">✓ '+pl.name+'</div><div class="pr">'+rate+'</div>';
+        el.className="pal-item on";
       } else {
-        var patsNeeded=(pl.money-t.m)/EUR_PER_PAT_PROJ;
-        var rate=daysLeft>0?(Math.ceil(patsNeeded/daysLeft*10)/10).toFixed(1).replace(".",",")+" pts/j":"—";
-        el.innerHTML='<div class="pn">'+(fn2?"→ ":"")+pl.name+'</div><div class="pr">'+rate+" sur "+daysLeft+" j"+'</div>';
+        el.innerHTML='<div class="pn">'+(fn2?"→ ":"")+pl.name+'</div><div class="pr">'+rate+'</div>';
         el.className="pal-item"+(fn2?" next":"");fn2=false;
       }
     });
