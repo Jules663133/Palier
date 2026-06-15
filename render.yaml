@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: palier
+    runtime: static
+    staticPublishPath: .
+    buildCommand: ""
