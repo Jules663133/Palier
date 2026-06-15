@@ -131,8 +131,10 @@
   .stat-row .right{text-align:right}
   .stat-row .right .pal{font-family:"Instrument Serif",serif;font-size:18px}
   .stat-row .right .pal-sub{font-size:10px;color:var(--muted);margin-top:2px}
-  .pal-none{color:var(--faint)}
-  .pal-ok{color:var(--pat)}
+  .pal-list{display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+  .pal-item{font-size:12px;font-weight:500;color:var(--faint);transition:color .2s}
+  .pal-item.on{color:var(--pat);font-weight:600}
+  .pal-item.next{color:var(--muted)}
 
   details{margin-bottom:8px}
   summary{cursor:pointer;list-style:none;padding:6px 0 14px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
@@ -219,8 +221,12 @@
         <div class="k">Patients / jour</div>
       </div>
       <div class="right">
-        <div class="pal" id="sPalName">—</div>
-        <div class="pal-sub" id="sPalSub"></div>
+        <div class="pal-list" id="sPalList">
+          <div class="pal-item" id="pal0"></div>
+          <div class="pal-item" id="pal1"></div>
+          <div class="pal-item" id="pal2"></div>
+          <div class="pal-item" id="pal3"></div>
+        </div>
       </div>
     </div>
     <div class="stat-row">
@@ -305,12 +311,21 @@
     document.getElementById("todayMoney").innerHTML=fEur(d.money);
     var avg=t.days?(Math.round(t.p/t.days*10)/10):0;
     document.getElementById("sAvg").textContent=t.days?(avg.toFixed(1).replace(".",",")):"—";
-    var pl=palierFromAvg(avg);
-    var palName=document.getElementById("sPalName");
-    var palSub=document.getElementById("sPalSub");
-    if(!t.days){palName.textContent="—";palName.className="pal";palSub.textContent="";}
-    else if(!pl){palName.textContent="En dessous";palName.className="pal pal-none";palSub.textContent="< 22,2 pts/j pour l'équilibre";}
-    else{palName.textContent=pl.name+" ✓";palName.className="pal pal-ok";palSub.textContent=pl.pday.toFixed(1).replace(".",",")+" pts/j minimum";}
+    var firstNext=true;
+    PALIERS.forEach(function(pl,i){
+      var el=document.getElementById("pal"+i);
+      if(!el)return;
+      var reached=t.days&&avg>=pl.pday;
+      if(reached){
+        el.textContent="✓ "+pl.name;
+        el.className="pal-item on";
+        firstNext=true;
+      } else {
+        el.textContent=(firstNext?"→ ":"")+pl.name+" ("+pl.pday.toFixed(1).replace(".",",")+"/j)";
+        el.className="pal-item"+(firstNext?" next":"");
+        firstNext=false;
+      }
+    });
     document.getElementById("sNet").innerHTML=fEur(t.m*NET_RATE);
     var np=nextPalier(t);
     if(np){
