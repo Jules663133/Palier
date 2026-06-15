@@ -329,11 +329,14 @@
     // Taux fixe théorique pour la projection future (30€ × 80% retro)
     var EUR_PER_PAT_PROJ=24;
 
-    // Ligne 1 : objectif nombre de patients
+    var moneyAvg=t.days>0?t.m/t.days:0;
+
+    // Ligne 1 : objectif patients — vert si moyenne/j >= cadence requise du palier
     var fn1=true;
     PALIERS.forEach(function(pl,i){
       var el=document.getElementById("pp"+i);if(!el)return;
-      if(t.p>=pl.patients){
+      var onPace=t.days>0&&avg>=pl.pday;
+      if(onPace){
         el.innerHTML='<div class="pn">✓ '+pl.name+'</div>';el.className="pal-item on";
       } else {
         var rate=daysLeft>0?(Math.ceil((pl.patients-t.p)/daysLeft*10)/10).toFixed(1).replace(".",",")+" pts/j":"—";
@@ -342,11 +345,12 @@
       }
     });
 
-    // Ligne 2 : objectif €, converti en pts/j selon revenu réel par patient
+    // Ligne 2 : objectif € — vert si revenus moyens/j >= montant quotidien requis du palier
     var fn2=true;
     PALIERS.forEach(function(pl,i){
       var el=document.getElementById("pm"+i);if(!el)return;
-      if(t.m>=pl.money){
+      var onPace=t.days>0&&moneyAvg>=(pl.money/TOTAL_DAYS);
+      if(onPace){
         el.innerHTML='<div class="pn">✓ '+pl.name+'</div>';el.className="pal-item on";
       } else {
         var patsNeeded=(pl.money-t.m)/EUR_PER_PAT_PROJ;
