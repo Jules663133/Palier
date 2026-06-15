@@ -133,9 +133,11 @@
   .stat-row .right .pal-sub{font-size:10px;color:var(--muted);margin-top:2px}
   .stat-row-title{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);text-align:right;margin-bottom:5px}
   .pal-list{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
-  .pal-item{text-align:right;transition:color .2s}
+  .pal-item{text-align:right;transition:all .2s}
   .pal-item .pn{font-size:12px;font-weight:600;color:var(--faint)}
   .pal-item .pr{font-size:10px;color:var(--faint);margin-top:1px}
+  .pal-item.on{text-align:left;background:rgba(15,118,110,.07);border-left:3px solid var(--pat);
+               border-radius:0 6px 6px 0;padding:5px 10px;align-self:flex-start;margin-left:0;width:100%}
   .pal-item.on .pn{color:var(--pat)}
   .pal-item.next .pn{color:var(--ink)}
   .pal-item.next .pr{color:var(--muted)}
@@ -241,14 +243,6 @@
       <div class="right">
         <div class="stat-row-title">Objectif €</div>
         <div class="pal-list" id="palMon0"><div class="pal-item" id="pm0"></div><div class="pal-item" id="pm1"></div><div class="pal-item" id="pm2"></div><div class="pal-item" id="pm3"></div></div>
-      </div>
-    </div>
-
-    <!-- Ligne 3 : net estimé -->
-    <div class="stat-row">
-      <div class="left">
-        <div class="v" id="sNet">—</div>
-        <div class="k">Net estimé</div>
       </div>
     </div>
 
@@ -362,7 +356,6 @@
       }
     });
 
-    document.getElementById("sNet").innerHTML=fEur(t.m*NET_RATE);
     var np=nextPalier(t);
     if(np){
       document.getElementById("nextName").textContent=np.name;
