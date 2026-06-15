@@ -179,8 +179,6 @@
   .day-ring-track{fill:none;stroke:var(--track);stroke-width:5}
   .day-ring-arc{fill:none;stroke:var(--pat);stroke-width:5;stroke-linecap:round;
                 transition:stroke-dashoffset .8s cubic-bezier(.22,1,.36,1)}
-  .day-ring-num{font-family:"Instrument Serif",serif;font-size:13px;text-align:center;line-height:1;color:var(--ink)}
-  .day-ring-sub{font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:center}
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -196,13 +194,14 @@
   <div class="gauges">
     <div class="col"><div class="track"><div id="fillPat" class="fill pat"></div><div id="marksPat"></div></div><div class="labs left" id="labsPat"></div></div>
     <div class="day-ring-col">
-      <svg class="day-ring-svg" width="52" height="52" viewBox="0 0 52 52">
+      <svg width="52" height="52" viewBox="0 0 52 52">
         <circle class="day-ring-track" cx="26" cy="26" r="24"/>
         <circle class="day-ring-arc" id="dayArc" cx="26" cy="26" r="24"
-          stroke-dasharray="150.8" stroke-dashoffset="0"/>
+          stroke-dasharray="150.8" stroke-dashoffset="0"
+          transform="rotate(-90 26 26)"/>
+        <text id="daysLeftNum" x="26" y="26" text-anchor="middle" dominant-baseline="central"
+          font-family="Instrument Serif,serif" font-size="14" fill="var(--ink)">—</text>
       </svg>
-      <div class="day-ring-num" id="daysLeftNum">—</div>
-      <div class="day-ring-sub">j restants</div>
     </div>
     <div class="col"><div class="track"><div id="fillMoney" class="fill money"></div><div id="marksMoney"></div></div><div class="labs right" id="labsMoney"></div></div>
   </div>
