@@ -327,17 +327,19 @@
     go("Money","money","money",t.m,MONEY_MAX,mt,function(v){return fK(v);});
   }
   function calcDaysLeft(){
+    // Compte les jours ouvrés écoulés depuis le 15 juin (sans compter aujourd'hui)
+    // daysLeft = 126 - jours_ouvrés_écoulés
     var holidays=["2026-07-14","2026-11-11","2026-12-25"];
+    var start=new Date(2026,5,15); start.setHours(0,0,0,0);
     var today=new Date(); today.setHours(0,0,0,0);
-    var end=new Date(2026,11,31);
-    var count=0, d=new Date(today);
-    while(d<=end){
+    var elapsed=0, d=new Date(start);
+    while(d<today){
       var dow=d.getDay();
       var iso=d.toISOString().slice(0,10);
-      if(dow!==0&&dow!==6&&!holidays.includes(iso))count++;
+      if(dow!==0&&dow!==6&&!holidays.includes(iso))elapsed++;
       d.setDate(d.getDate()+1);
     }
-    return count;
+    return Math.max(0, TOTAL_DAYS-elapsed);
   }
   function render(){
     var t=totals();
