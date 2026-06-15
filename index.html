@@ -123,15 +123,17 @@
   .today{margin-top:14px;font-size:12px;color:var(--muted)} .today b{color:var(--ink);font-weight:600}
 
   /* stats — ligne unique */
-  .stats{margin-bottom:24px}
+  .stats{display:flex;flex-direction:column;justify-content:space-evenly;
+         height:calc(100svh - max(26px,env(safe-area-inset-top)) - calc(24px + env(safe-area-inset-bottom)))}
   .stat-row{display:flex;justify-content:space-between;align-items:center;
-            padding:14px 0;border-bottom:1px solid var(--hair2)}
-  .stat-row .left .v{font-family:"Instrument Serif",serif;font-size:28px;line-height:1}
-  .stat-row .left .k{font-size:9.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+            padding:24px 0;border-bottom:1px solid var(--hair2)}
+  .stat-row:last-child{border-bottom:none}
+  .stat-row .left .v{font-family:"Instrument Serif",serif;font-size:48px;line-height:1}
+  .stat-row .left .k{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:6px}
   .stat-row .right{text-align:right}
-  .stat-row .right .pal{font-family:"Instrument Serif",serif;font-size:18px}
-  .stat-row .right .pal-sub{font-size:10px;color:var(--muted);margin-top:2px}
-  .stat-row-title{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);text-align:right;margin-bottom:5px}
+  .stat-row-title{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);text-align:right;margin-bottom:8px}
+  .pal-item .pn{font-size:14px;font-weight:600;color:var(--faint)}
+  .pal-item .pr{font-size:11px;color:var(--faint);margin-top:2px}
   .pal-list{display:flex;flex-direction:column;gap:6px;}
   .pal-item{text-align:right;margin-left:auto;transition:all .2s}
   .pal-item .pn{font-size:12px;font-weight:600;color:var(--faint)}
