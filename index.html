@@ -265,7 +265,7 @@
   </div>
 
   <details>
-    <summary><span>Historique</span><span id="histCount"></span></summary>
+    <summary><span>Historique</span><div style="display:flex;align-items:center;gap:10px;"><span id="histCount"></span><button onclick="event.preventDefault();openAddDay()" style="font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid var(--hair);background:none;color:var(--muted);font-family:inherit;cursor:pointer;">+ Ajouter</button></div></summary>
     <div id="hist"></div>
   </details>
 
@@ -277,7 +277,7 @@
 <script>
 (function(){
   "use strict";
-  var PAT_MAX=3475, MONEY_MAX=83400, TOTAL_DAYS=126;
+  var PAT_MAX=3475, MONEY_MAX=83400, TOTAL_DAYS=127;
   var PALIERS=[
     {name:"Équilibre",    patients:2792, money:67000, pday:22.2},
     {name:"Plafond 30 %", patients:3038, money:72900, pday:24.1},
@@ -330,7 +330,7 @@
     // Compte les jours ouvrés écoulés depuis le 15 juin (sans compter aujourd'hui)
     // daysLeft = 126 - jours_ouvrés_écoulés
     var holidays=["2026-07-14","2026-11-11","2026-12-25"];
-    var start=new Date(2026,5,15); start.setHours(0,0,0,0);
+    var start=new Date(2026,5,12); start.setHours(0,0,0,0);
     var today=new Date(); today.setHours(0,0,0,0);
     var elapsed=0, d=new Date(start);
     while(d<today){
@@ -447,6 +447,26 @@
   function closeRows(except){
     var rows=document.querySelectorAll(".hrow");
     for(var i=0;i<rows.length;i++){var r=rows[i];if(r!==except&&r.dataset.open){r.dataset.open="";var it=r.querySelector(".hitem");it.style.transition="transform .25s";it.style.transform="translateX(0)";}}
+  }
+  function openAddDay(){
+    sheet.innerHTML='<h3>Ajouter un jour</h3>'+
+      '<label>Date</label><input id="addDate" type="text" placeholder="JJ/MM/AAAA" maxlength="10"'+
+      ' oninput="var v=this.value.replace(/[^0-9]/g,\'\');if(v.length>=5)v=v.slice(0,2)+\'/\'+v.slice(2,4)+\'/\'+v.slice(4,8);else if(v.length>=3)v=v.slice(0,2)+\'/\'+v.slice(2);this.value=v;">'+
+      '<label>Patients</label><input id="addP" type="number" inputmode="numeric" placeholder="0">'+
+      '<label>Argent encaissé (€)</label><input id="addM" type="number" inputmode="decimal" placeholder="0">'+
+      '<div class="acts"><button class="btnp ghost" id="addCancel">Annuler</button><button class="btnp save" id="addSave">Ajouter</button></div>';
+    modal.hidden=false;
+    document.getElementById("addCancel").onclick=closeModal;
+    document.getElementById("addSave").onclick=function(){
+      var raw=document.getElementById("addDate").value.trim();
+      var parts=raw.split("/");
+      if(parts.length!==3)return;
+      var key=parts[2]+"-"+parts[1].padStart(2,"0")+"-"+parts[0].padStart(2,"0");
+      var pv=Math.max(0,Math.round(parseFloat(document.getElementById("addP").value)||0));
+      var mv=Math.max(0,parseFloat(document.getElementById("addM").value)||0);
+      if(pv||mv){state.days[key]={patients:pv,money:mv};}
+      closeModal();render();
+    };
   }
   var modal=document.getElementById("modal"), sheet=document.getElementById("sheet");
   function closeModal(){modal.hidden=true;sheet.innerHTML="";}
