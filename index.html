@@ -236,10 +236,10 @@
   </div><!-- /page-main -->
 
   <!-- PAGE 2 : stats & historique -->
+  <!-- PAGE 2 : STATS -->
   <div class="snap-page page-stats">
   <div class="stats">
 
-    <!-- Ligne 1 : objectif nombre de patients -->
     <div class="stat-row">
       <div class="left">
         <div class="v" id="sAvg">—</div>
@@ -251,7 +251,6 @@
       </div>
     </div>
 
-    <!-- Ligne 2 : objectif €, ajusté au revenu réel/patient -->
     <div class="stat-row">
       <div class="left">
         <div class="v" id="sEurPat">—</div>
@@ -264,14 +263,17 @@
     </div>
 
   </div>
+  </div><!-- /page-stats -->
 
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0 14px;">
+  <!-- PAGE 3 : HISTORIQUE -->
+  <div class="snap-page page-stats">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:0 0 14px;">
     <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--muted);">Historique <span id="histCount" style="font-weight:400;opacity:.6;"></span></span>
     <button id="btnAddDay" style="background:none;border:1px solid var(--hair);color:var(--muted);font-size:13px;font-weight:600;padding:3px 12px;border-radius:99px;cursor:pointer;font-family:inherit;letter-spacing:.04em;">+ Ajouter</button>
   </div>
   <div id="hist"></div>
+  </div><!-- /page-hist -->
 
-  </div><!-- /page-stats -->
 </div><!-- /snap-wrap -->
 
 <div id="modal" class="modal" hidden><div class="sheet" id="sheet"></div></div>
