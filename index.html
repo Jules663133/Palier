@@ -353,9 +353,8 @@
     document.getElementById("sAvg").textContent=t.days?(avg.toFixed(1).replace(".",",")):"—";
     // Jours ouvrés restants basés sur le calendrier (pas sur les entrées)
     var daysLeft=calcDaysLeft();
-    var pctElapsed=1-(daysLeft/TOTAL_DAYS);
     var arc=document.getElementById("dayArc");
-    if(arc){var C=188.5;arc.setAttribute("stroke-dashoffset",(C*pctElapsed).toFixed(1));}
+    if(arc){var C=188.5;arc.setAttribute("stroke-dashoffset",(C*daysLeft/TOTAL_DAYS).toFixed(1));}
     document.getElementById("daysLeftNum").textContent=daysLeft;
     // Moyenne €/jour (affiché seulement, pas utilisé pour la projection)
     var eurJourDisplay=t.days>0?Math.round(t.m/t.days):null;
