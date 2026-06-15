@@ -329,9 +329,11 @@
     var avg=t.days?(Math.round(t.p/t.days*10)/10):0;
     document.getElementById("sAvg").textContent=t.days?(avg.toFixed(1).replace(".",",")):"—";
     var daysLeft=TOTAL_DAYS-t.days;
-    // Revenu réel par patient (fallback 24€ = 30€ × 80% si pas encore de données)
-    var eurPerPat=(t.p>0&&t.m>0)?(t.m/t.p):24;
-    document.getElementById("sEurPat").textContent=t.p>0?fEur(eurPerPat):"—";
+    // Revenu réel par patient (affiché seulement, pas utilisé pour la projection)
+    var eurPerPatDisplay=(t.p>0&&t.m>0)?(t.m/t.p):null;
+    document.getElementById("sEurPat").textContent=eurPerPatDisplay?fEur(eurPerPatDisplay):"—";
+    // Taux fixe théorique pour la projection future (30€ × 80% retro)
+    var EUR_PER_PAT_PROJ=24;
 
     // Ligne 1 : objectif nombre de patients
     var fn1=true;
@@ -353,7 +355,7 @@
       if(t.m>=pl.money){
         el.innerHTML='<div class="pn">✓ '+pl.name+'</div>';el.className="pal-item on";
       } else {
-        var patsNeeded=(pl.money-t.m)/eurPerPat;
+        var patsNeeded=(pl.money-t.m)/EUR_PER_PAT_PROJ;
         var rate=daysLeft>0?(Math.ceil(patsNeeded/daysLeft*10)/10).toFixed(1).replace(".",",")+" pts/j":"—";
         el.innerHTML='<div class="pn">'+(fn2?"→ ":"")+pl.name+'</div><div class="pr">'+rate+" sur "+daysLeft+" j"+'</div>';
         el.className="pal-item"+(fn2?" next":"");fn2=false;
