@@ -265,7 +265,7 @@
   </div>
 
   <details>
-    <summary><span>Historique</span><div style="display:flex;align-items:center;gap:10px;"><span id="histCount"></span><button onclick="event.preventDefault();openAddDay()" style="font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid var(--hair);background:none;color:var(--muted);font-family:inherit;cursor:pointer;">+ Ajouter</button></div></summary>
+    <summary><span>Historique</span><div style="display:flex;align-items:center;gap:10px;"><span id="histCount"></span><button onclick="event.stopPropagation();openAddDay()" style="font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid var(--hair);background:none;color:var(--muted);font-family:inherit;cursor:pointer;">+ Ajouter</button></div></summary>
     <div id="hist"></div>
   </details>
 
@@ -279,10 +279,10 @@
   "use strict";
   var PAT_MAX=3475, MONEY_MAX=83400, TOTAL_DAYS=127;
   var PALIERS=[
-    {name:"Équilibre",    patients:2792, money:67000, pday:22.2},
-    {name:"Plafond 30 %", patients:3038, money:72900, pday:24.1},
-    {name:"Prévisionnel", patients:3158, money:75800, pday:25.1},
-    {name:"+10 000 €",    patients:3475, money:83400, pday:27.6}
+    {name:"Équilibre",    patients:2792, money:67000, pday:22.0},
+    {name:"Plafond 30 %", patients:3038, money:72900, pday:23.9},
+    {name:"Prévisionnel", patients:3158, money:75800, pday:24.9},
+    {name:"+10 000 €",    patients:3475, money:83400, pday:27.4}
   ];
   var NET_RATE=0.657;
   function palierFromAvg(avg){
