@@ -64,7 +64,7 @@
   .head.pat .num{color:var(--pat)} .head.money .num{color:var(--money)}
   .head .cap{font-size:11px;color:var(--faint);margin-top:3px}
 
-  .gauges{display:grid;grid-template-columns:1fr 1fr;gap:24px;height:330px;margin:14px 0 0}
+  .gauges{display:grid;grid-template-columns:1fr 56px 1fr;gap:12px;height:330px;margin:14px 0 0}
   .col{position:relative;height:100%}
   .track{position:absolute;left:50%;transform:translateX(-50%);width:58px;height:100%;
          background:var(--track);border-radius:14px;overflow:hidden}
@@ -173,6 +173,14 @@
   .btnp.save{background:var(--pat);color:#fff} .btnp.del2{background:#C0493B;color:#fff}
   .btnp.ghost{background:none;border:1px solid var(--hair);color:var(--ink)}
   .btnp.del{width:100%;margin-top:10px;background:none;color:#C0493B;border:1px solid rgba(192,73,59,.4)}
+
+  .day-ring-col{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+  .day-ring-svg{transform:rotate(-90deg)}
+  .day-ring-track{fill:none;stroke:var(--track);stroke-width:5}
+  .day-ring-arc{fill:none;stroke:var(--pat);stroke-width:5;stroke-linecap:round;
+                transition:stroke-dashoffset .8s cubic-bezier(.22,1,.36,1)}
+  .day-ring-num{font-family:"Instrument Serif",serif;font-size:13px;text-align:center;line-height:1;color:var(--ink)}
+  .day-ring-sub{font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:center}
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -187,6 +195,15 @@
 
   <div class="gauges">
     <div class="col"><div class="track"><div id="fillPat" class="fill pat"></div><div id="marksPat"></div></div><div class="labs left" id="labsPat"></div></div>
+    <div class="day-ring-col">
+      <svg class="day-ring-svg" width="52" height="52" viewBox="0 0 52 52">
+        <circle class="day-ring-track" cx="26" cy="26" r="24"/>
+        <circle class="day-ring-arc" id="dayArc" cx="26" cy="26" r="24"
+          stroke-dasharray="150.8" stroke-dashoffset="0"/>
+      </svg>
+      <div class="day-ring-num" id="daysLeftNum">—</div>
+      <div class="day-ring-sub">j restants</div>
+    </div>
     <div class="col"><div class="track"><div id="fillMoney" class="fill money"></div><div id="marksMoney"></div></div><div class="labs right" id="labsMoney"></div></div>
   </div>
 
@@ -310,6 +327,19 @@
     go("Pat","pat","patients",t.p,PAT_MAX,pt,function(v){return fInt(v);});
     go("Money","money","money",t.m,MONEY_MAX,mt,function(v){return fK(v);});
   }
+  function calcDaysLeft(){
+    var holidays=["2026-07-14","2026-11-11","2026-12-25"];
+    var today=new Date(); today.setHours(0,0,0,0);
+    var end=new Date(2026,11,31);
+    var count=0, d=new Date(today);
+    while(d<=end){
+      var dow=d.getDay();
+      var iso=d.toISOString().slice(0,10);
+      if(dow!==0&&dow!==6&&!holidays.includes(iso))count++;
+      d.setDate(d.getDate()+1);
+    }
+    return count;
+  }
   function render(){
     var t=totals();
     var pt=patTarget(t.p), mt=moneyTarget(t.m);
@@ -322,7 +352,12 @@
     document.getElementById("todayMoney").innerHTML=fEur(d.money);
     var avg=t.days?(Math.round(t.p/t.days*10)/10):0;
     document.getElementById("sAvg").textContent=t.days?(avg.toFixed(1).replace(".",",")):"—";
-    var daysLeft=TOTAL_DAYS-t.days;
+    // Jours ouvrés restants basés sur le calendrier (pas sur les entrées)
+    var daysLeft=calcDaysLeft();
+    var pctElapsed=1-(daysLeft/TOTAL_DAYS);
+    var arc=document.getElementById("dayArc");
+    if(arc){var C=150.8;arc.setAttribute("stroke-dashoffset",(C*pctElapsed).toFixed(1));}
+    document.getElementById("daysLeftNum").textContent=daysLeft;
     // Moyenne €/jour (affiché seulement, pas utilisé pour la projection)
     var eurJourDisplay=t.days>0?Math.round(t.m/t.days):null;
     document.getElementById("sEurPat").textContent=eurJourDisplay?fEur(eurJourDisplay):"—";
@@ -336,7 +371,7 @@
     PALIERS.forEach(function(pl,i){
       var el=document.getElementById("pp"+i);if(!el)return;
       var onPace=t.days>0&&avg>=pl.pday;
-      var rate=daysLeft>0?(Math.ceil((pl.patients-t.p)/daysLeft*10)/10).toFixed(1).replace(".",",")+" pts/j sur "+daysLeft+" j":"—";
+      var rate=daysLeft>0?(Math.ceil((pl.patients-t.p)/daysLeft*10)/10).toFixed(1).replace(".",",")+" pts/j":"—";
       if(onPace){
         el.innerHTML='<div class="pn">✓ '+pl.name+'</div><div class="pr">'+rate+'</div>';
         el.className="pal-item on";
@@ -352,7 +387,7 @@
       var el=document.getElementById("pm"+i);if(!el)return;
       var onPace=t.days>0&&moneyAvg>=(pl.money/TOTAL_DAYS);
       var patsNeeded=(pl.money-t.m)/EUR_PER_PAT_PROJ;
-      var rate=daysLeft>0?(Math.ceil(patsNeeded/daysLeft*10)/10).toFixed(1).replace(".",",")+" pts/j sur "+daysLeft+" j":"—";
+      var rate=daysLeft>0?(Math.ceil(patsNeeded/daysLeft*10)/10).toFixed(1).replace(".",",")+" pts/j":"—";
       if(onPace){
         el.innerHTML='<div class="pn">✓ '+pl.name+'</div><div class="pr">'+rate+'</div>';
         el.className="pal-item on";
