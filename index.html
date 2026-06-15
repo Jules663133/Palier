@@ -64,7 +64,7 @@
   .head.pat .num{color:var(--pat)} .head.money .num{color:var(--money)}
   .head .cap{font-size:11px;color:var(--faint);margin-top:3px}
 
-  .gauges{display:grid;grid-template-columns:1fr 56px 1fr;gap:12px;height:330px;margin:14px 0 0}
+  .gauges{display:grid;grid-template-columns:1fr 72px 1fr;gap:12px;height:330px;margin:14px 0 0}
   .col{position:relative;height:100%}
   .track{position:absolute;left:50%;transform:translateX(-50%);width:58px;height:100%;
          background:var(--track);border-radius:14px;overflow:hidden}
@@ -177,7 +177,7 @@
   .day-ring-col{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
   .day-ring-svg{transform:rotate(-90deg)}
   .day-ring-track{fill:none;stroke:var(--track);stroke-width:5}
-  .day-ring-arc{fill:none;stroke:var(--pat);stroke-width:5;stroke-linecap:round;
+  .day-ring-arc{fill:none;stroke:#C0493B;stroke-width:5;stroke-linecap:round;
                 transition:stroke-dashoffset .8s cubic-bezier(.22,1,.36,1)}
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -194,13 +194,13 @@
   <div class="gauges">
     <div class="col"><div class="track"><div id="fillPat" class="fill pat"></div><div id="marksPat"></div></div><div class="labs left" id="labsPat"></div></div>
     <div class="day-ring-col">
-      <svg width="52" height="52" viewBox="0 0 52 52">
-        <circle class="day-ring-track" cx="26" cy="26" r="24"/>
-        <circle class="day-ring-arc" id="dayArc" cx="26" cy="26" r="24"
-          stroke-dasharray="150.8" stroke-dashoffset="0"
-          transform="rotate(-90 26 26)"/>
-        <text id="daysLeftNum" x="26" y="26" text-anchor="middle" dominant-baseline="central"
-          font-family="Instrument Serif,serif" font-size="14" fill="var(--ink)">—</text>
+      <svg width="68" height="68" viewBox="0 0 68 68">
+        <circle class="day-ring-track" cx="34" cy="34" r="30"/>
+        <circle class="day-ring-arc" id="dayArc" cx="34" cy="34" r="30"
+          stroke-dasharray="188.5" stroke-dashoffset="0"
+          transform="rotate(-90 34 34)"/>
+        <text id="daysLeftNum" x="34" y="34" text-anchor="middle" dominant-baseline="central"
+          font-family="Instrument Serif,serif" font-size="15" fill="var(--ink)">—</text>
       </svg>
     </div>
     <div class="col"><div class="track"><div id="fillMoney" class="fill money"></div><div id="marksMoney"></div></div><div class="labs right" id="labsMoney"></div></div>
@@ -355,7 +355,7 @@
     var daysLeft=calcDaysLeft();
     var pctElapsed=1-(daysLeft/TOTAL_DAYS);
     var arc=document.getElementById("dayArc");
-    if(arc){var C=150.8;arc.setAttribute("stroke-dashoffset",(C*pctElapsed).toFixed(1));}
+    if(arc){var C=188.5;arc.setAttribute("stroke-dashoffset",(C*pctElapsed).toFixed(1));}
     document.getElementById("daysLeftNum").textContent=daysLeft;
     // Moyenne €/jour (affiché seulement, pas utilisé pour la projection)
     var eurJourDisplay=t.days>0?Math.round(t.m/t.days):null;
