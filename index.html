@@ -264,8 +264,6 @@
 
   </div>
 
-  <button onclick="openAddDay()" style="width:100%;background:none;border:1px solid var(--hair);color:var(--muted);font-family:inherit;font-size:12px;padding:12px;border-radius:10px;cursor:pointer;margin-bottom:16px;">+ Ajouter un jour passé</button>
-
   <details>
     <summary><span>Historique</span><span id="histCount"></span></summary>
     <div id="hist"></div>
@@ -273,6 +271,8 @@
 
   </div><!-- /page-stats -->
 </div><!-- /snap-wrap -->
+
+  <button id="btnAdd" onclick="openAddDay()" style="position:fixed;bottom:calc(28px + env(safe-area-inset-bottom));right:24px;background:var(--ink);color:white;border:none;border-radius:99px;padding:12px 20px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;z-index:40;box-shadow:0 4px 16px rgba(21,33,31,.25);">+ Jour</button>
 
   <div id="modal" class="modal" hidden><div class="sheet" id="sheet"></div></div>
 
