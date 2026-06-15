@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="&nbsp;">
+<meta name="theme-color" content="#FAFBFB">
+<title>Palier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23FAFBFB'/%3E%3Crect x='11' y='7' width='3' height='18' rx='1.5' fill='%230F766E'/%3E%3Crect x='18' y='13' width='3' height='12' rx='1.5' fill='%23A8761F'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="icon.png">
+<style>
+  :root{
+    --paper:#FAFBFB; --ink:#15211F; --muted:#8A9694; --faint:#B9C2C0;
+    --hair:rgba(21,33,31,.10); --hair2:rgba(21,33,31,.06);
+    --track:#ECEEED; --pat:#0F766E; --money:#A8761F;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{
+    background:var(--paper);color:var(--ink);
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-feature-settings:"tnum" 1;-webkit-font-smoothing:antialiased;
+    padding:max(26px,env(safe-area-inset-top)) 24px calc(40px + env(safe-area-inset-bottom));
+    max-width:440px;margin:0 auto;min-height:100vh;
+  }
+  .eyebrow{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--faint);font-weight:600}
+  h1{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:40px;line-height:.95;margin:8px 0 0;letter-spacing:.01em}
+  .sub{color:var(--muted);font-size:13px;margin:6px 0 34px}
+
+  /* hero */
+  .heads{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:end;margin-top:8px}
+  .head .tag{font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--muted)}
+  .head.money{text-align:right}
+  .head .num{font-family:"Instrument Serif",serif;font-size:42px;line-height:1;margin-top:4px;letter-spacing:.01em}
+  .head.pat .num{color:var(--pat)} .head.money .num{color:var(--money)}
+  .head .cap{font-size:11px;color:var(--faint);margin-top:3px}
+
+  .gauges{display:grid;grid-template-columns:1fr 1fr;gap:24px;height:250px;margin:18px 0 0}
+  .col{position:relative;height:100%}
+  .track{position:absolute;left:50%;transform:translateX(-50%);width:58px;height:100%;
+         background:var(--track);border-radius:14px;overflow:hidden}
+  .fill{position:absolute;left:0;right:0;bottom:0;height:0%;
+        transition:height .65s cubic-bezier(.22,1,.36,1)}
+  .fill.pat{background:var(--pat)} .fill.money{background:var(--money)}
+  .rule{position:absolute;left:0;right:0;border-top:1px solid rgba(255,255,255,.35);z-index:2}
+  .rule.pat,.rule.money{border-top-color:rgba(21,33,31,.16)}
+  .rule.pat.on,.rule.money.on{border-top-color:rgba(255,255,255,.55)}
+  .rule.cur{border-top-width:2px}
+  .rule.pat.cur{border-top-color:#fff} .rule.money.cur{border-top-color:#fff}
+  .labs{position:absolute;inset:0;pointer-events:none}
+  .plab{position:absolute;font-size:9.5px;line-height:1;color:var(--faint);white-space:nowrap;
+        transform:translateY(-50%);transition:color .3s,font-weight .3s}
+  .labs.left .plab{right:calc(50% + 37px);text-align:right}
+  .labs.right .plab{left:calc(50% + 37px);text-align:left}
+  .plab.on{color:var(--muted)}
+  .labs.left .plab.cur{color:var(--pat);font-weight:600}
+  .labs.right .plab.cur{color:var(--money);font-weight:600}
+
+  /* next palier — une ligne discrète */
+  .next{display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+        padding:18px 0;margin:30px 0 0;border-top:1px solid var(--hair)}
+  .next .lab{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .next .big{font-family:"Instrument Serif",serif;font-size:22px;margin-top:4px}
+  .next .gap{text-align:right;font-size:12px;color:var(--muted);line-height:1.6}
+  .next .gap b{color:var(--ink);font-weight:600}
+
+  /* paliers — liste fine */
+  .paliers{border-top:1px solid var(--hair);margin-bottom:32px}
+  .chip{display:flex;justify-content:space-between;align-items:center;gap:12px;
+        padding:11px 0;border-bottom:1px solid var(--hair2)}
+  .chip .nm{font-family:"Instrument Serif",serif;font-size:17px;color:var(--faint);transition:color .3s}
+  .chip .vv{font-size:11px;color:var(--faint);margin-top:0}
+  .chip.done .nm{color:var(--ink)}
+  .chip .st{display:flex;gap:6px}
+  .dot{width:7px;height:7px;border-radius:50%;border:1px solid var(--faint)}
+  .dot.pat.on{background:var(--pat);border-color:var(--pat)}
+  .dot.money.on{background:var(--money);border-color:var(--money)}
+
+  /* inputs */
+  .block{margin-bottom:30px}
+  .block h2{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 16px}
+  .prow{display:flex;align-items:center;gap:14px}
+  .tap{flex:1;border:none;background:var(--pat);color:#fff;border-radius:99px;padding:16px 0;
+       font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;transition:transform .08s,opacity .2s}
+  .tap:active{transform:scale(.97);opacity:.9}
+  .mini{width:46px;height:46px;border-radius:99px;border:1px solid var(--hair);background:none;color:var(--ink);
+        font-family:inherit;font-size:18px;font-weight:500;cursor:pointer;transition:transform .08s,background .2s}
+  .mini:active{transform:scale(.92);background:var(--hair2)} .mini.plus5{font-size:14px;font-weight:600}
+  .moneyrow{display:flex}
+  .moneyrow input{width:100%;border:1.5px solid var(--money);background:rgba(168,118,31,.06);
+        color:var(--ink);font-family:inherit;font-size:17px;padding:15px 16px;border-radius:14px;min-width:0}
+  .moneyrow input::placeholder{color:var(--faint)}
+  .moneyrow input:focus{outline:none;border-color:var(--money);box-shadow:0 0 0 3px rgba(168,118,31,.14)}
+  .today{margin-top:14px;font-size:12px;color:var(--muted)} .today b{color:var(--ink);font-weight:600}
+
+  /* stats — ligne unique */
+  .stats{display:flex;justify-content:space-between;border-top:1px solid var(--hair);
+         border-bottom:1px solid var(--hair);padding:16px 0;margin-bottom:24px}
+  .stat{text-align:center;flex:1}
+  .stat .v{font-family:"Instrument Serif",serif;font-size:22px}
+  .stat .k{font-size:9.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+  .stat+.stat{border-left:1px solid var(--hair2)}
+
+  details{margin-bottom:8px}
+  summary{cursor:pointer;list-style:none;padding:6px 0 14px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+          color:var(--muted);font-weight:600;display:flex;justify-content:space-between}
+  summary::-webkit-details-marker{display:none}
+  .hrow{position:relative;overflow:hidden;border-top:1px solid var(--hair2)}
+  .hactions{position:absolute;top:0;right:0;bottom:0;display:flex;z-index:0}
+  .hmod,.hdel{width:82px;border:none;font-family:inherit;font-size:13px;font-weight:600;color:#fff;cursor:pointer}
+  .hmod{background:var(--muted)} .hdel{background:#C0493B}
+  .hitem{position:relative;z-index:1;background:var(--paper);display:flex;justify-content:space-between;
+         align-items:center;padding:13px 2px;font-size:14px;touch-action:pan-y;will-change:transform}
+  .hitem .d{color:var(--muted);font-size:12px}
+  .hitem .vals{display:flex;gap:16px;align-items:center}
+  .hitem .pp{color:var(--pat);font-weight:600} .hitem .mm{color:var(--money);font-weight:600}
+  .empty{color:var(--faint);font-size:13px;padding:16px 0;text-align:center}
+  .reset{width:100%;background:none;border:none;color:var(--faint);font-family:inherit;font-size:12px;
+         letter-spacing:.04em;cursor:pointer;padding:16px 0 4px}
+  .modal{position:fixed;inset:0;background:rgba(21,33,31,.45);display:flex;align-items:flex-end;justify-content:center;z-index:50}
+  .modal[hidden]{display:none}
+  .sheet{background:var(--paper);width:100%;max-width:440px;border-radius:22px 22px 0 0;
+         padding:24px 22px calc(24px + env(safe-area-inset-bottom));animation:rise .25s cubic-bezier(.22,1,.36,1)}
+  @keyframes rise{from{transform:translateY(40px);opacity:.4}to{transform:translateY(0);opacity:1}}
+  .sheet h3{font-family:"Instrument Serif",serif;font-weight:400;font-size:23px;margin:0 0 6px;text-transform:capitalize}
+  .sheet label{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:16px 0 7px}
+  .sheet input{width:100%;border:1px solid var(--hair);border-radius:12px;background:none;color:var(--ink);
+               font-family:inherit;font-size:17px;padding:13px 14px}
+  .sheet input:focus{outline:none;border-color:var(--ink)}
+  .acts{display:flex;gap:10px;margin-top:24px}
+  .btnp{flex:1;border:none;border-radius:99px;padding:15px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer}
+  .btnp.save{background:var(--pat);color:#fff} .btnp.del2{background:#C0493B;color:#fff}
+  .btnp.ghost{background:none;border:1px solid var(--hair);color:var(--ink)}
+  .btnp.del{width:100%;margin-top:10px;background:none;color:#C0493B;border:1px solid rgba(192,73,59,.4)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+  <div class="heads">
+    <div class="head pat"><div class="tag">Patients</div><div class="num" id="patNum">0</div></div>
+    <div class="head money"><div class="tag">Argent</div><div class="num" id="moneyNum">0&nbsp;€</div></div>
+  </div>
+
+  <div class="gauges">
+    <div class="col"><div class="track"><div id="fillPat" class="fill pat"></div><div id="marksPat"></div></div><div class="labs left" id="labsPat"></div></div>
+    <div class="col"><div class="track"><div id="fillMoney" class="fill money"></div><div id="marksMoney"></div></div><div class="labs right" id="labsMoney"></div></div>
+  </div>
+
+  <div class="next">
+    <div><div class="big" id="nextName">Équilibre</div></div>
+    <div class="gap" id="nextGap"></div>
+  </div>
+
+  <div class="block">
+    <h2>Patients vus</h2>
+    <div class="prow">
+      <button class="mini" id="minus" aria-label="Retirer un patient">–</button>
+      <button class="tap" id="plus1">+1 patient</button>
+      <button class="mini plus5" id="plus5" aria-label="Ajouter cinq patients">+5</button>
+    </div>
+    <div class="today">Aujourd'hui · <b id="todayPat">0</b> patients</div>
+  </div>
+
+  <div class="block">
+    <h2>Argent encaissé</h2>
+    <div class="moneyrow">
+      <input id="moneyInput" type="number" inputmode="decimal" placeholder="Montant rétrocession (€)" min="0" step="1">
+    </div>
+    <div class="today">Aujourd'hui · <b id="todayMoney">0&nbsp;€</b></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="v" id="sAvg">0</div><div class="k">Patients / j</div></div>
+    <div class="stat"><div class="v" id="sNet">0&nbsp;€</div><div class="k">Net estimé</div></div>
+  </div>
+
+  <details>
+    <summary><span>Historique</span><span id="histCount"></span></summary>
+    <div id="hist"></div>
+  </details>
+
+  <div id="modal" class="modal" hidden><div class="sheet" id="sheet"></div></div>
+
+<script>
+(function(){
+  "use strict";
+  var PAT_MAX=3475, MONEY_MAX=83400;
+  var PALIERS=[
+    {name:"Équilibre",   patients:2792, money:67000},
+    {name:"Plafond 30 %",patients:3038, money:72900},
+    {name:"Prévisionnel",patients:3158, money:75800},
+    {name:"+10 000 €",   patients:3475, money:83400}
+  ];
+  var NET_RATE=0.657;
+  var KEY="paliers_v1", mem=null;
+  function load(){try{var r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return mem||{days:{}};}
+  function save(s){mem=s;try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){}}
+  var state=load(); if(!state.days)state.days={};
+  var nfInt=new Intl.NumberFormat("fr-FR");
+  var nfEur=new Intl.NumberFormat("fr-FR",{style:"currency",currency:"EUR",maximumFractionDigits:0});
+  function fInt(n){return nfInt.format(Math.round(n));}
+  function fEur(n){return nfEur.format(Math.round(n)).replace(/ /g," ");}
+  function todayKey(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+  function totals(){var p=0,m=0,days=0;for(var k in state.days){var e=state.days[k];p+=e.patients||0;m+=e.money||0;if((e.patients||0)>0||(e.money||0)>0)days++;}return{p:p,m:m,days:days};}
+  function day(){var k=todayKey();if(!state.days[k])state.days[k]={patients:0,money:0};return state.days[k];}
+  function patTarget(p){for(var i=0;i<PALIERS.length;i++){if(p<PALIERS[i].patients)return PALIERS[i].patients;}return PALIERS[PALIERS.length-1].patients;}
+  function moneyTarget(m){for(var i=0;i<PALIERS.length;i++){if(m<PALIERS[i].money)return PALIERS[i].money;}return PALIERS[PALIERS.length-1].money;}
+  function nextPalier(t){for(var i=0;i<PALIERS.length;i++){if(t.p<PALIERS[i].patients||t.m<PALIERS[i].money)return PALIERS[i];}return null;}
+  function fK(v){var n=v/1000;return (n%1?n.toFixed(1).replace(".",","):n)+" k€";}
+  function buildMarks(t,pt,mt){
+    var H=250, minGap=15;
+    function go(prefix,cls,key,total,max,target,fmt){
+      var marks=document.getElementById("marks"+prefix), labs=document.getElementById("labs"+prefix);
+      marks.innerHTML="";labs.innerHTML="";
+      var items=PALIERS.map(function(pl){return {v:pl[key],y:(1-pl[key]/max)*H,on:total>=pl[key],cur:pl[key]===target&&total<pl[key]};});
+      items.forEach(function(it){
+        var m=document.createElement("div");
+        m.className="rule "+cls+(it.on?" on":"")+(it.cur?" cur":"");
+        m.style.top=it.y+"px";marks.appendChild(m);
+      });
+      var s=items.slice().sort(function(a,b){return a.y-b.y;});
+      for(var i=1;i<s.length;i++){if(s[i].y-s[i-1].y<minGap)s[i].y=s[i-1].y+minGap;}
+      s.forEach(function(it){
+        var l=document.createElement("div");
+        l.className="plab"+(it.on?" on":"")+(it.cur?" cur":"");
+        l.style.top=it.y+"px";l.textContent=fmt(it.v);labs.appendChild(l);
+      });
+    }
+    go("Pat","pat","patients",t.p,PAT_MAX,pt,function(v){return fInt(v);});
+    go("Money","money","money",t.m,MONEY_MAX,mt,function(v){return fK(v);});
+  }
+  function render(){
+    var t=totals();
+    var pt=patTarget(t.p), mt=moneyTarget(t.m);
+    document.getElementById("fillPat").style.height=Math.min(100,t.p/PAT_MAX*100)+"%";
+    document.getElementById("fillMoney").style.height=Math.min(100,t.m/MONEY_MAX*100)+"%";
+    document.getElementById("patNum").textContent=fInt(t.p);
+    document.getElementById("moneyNum").innerHTML=fEur(t.m);
+    var d=day();
+    document.getElementById("todayPat").textContent=fInt(d.patients);
+    document.getElementById("todayMoney").innerHTML=fEur(d.money);
+    document.getElementById("sAvg").textContent=t.days?fInt(t.p/t.days):"0";
+    document.getElementById("sNet").innerHTML=fEur(t.m*NET_RATE);
+    var np=nextPalier(t);
+    if(np){
+      document.getElementById("nextName").textContent=np.name;
+      document.getElementById("nextGap").innerHTML="encore <b>"+fInt(Math.max(0,np.patients-t.p))+"</b> patients<br>et <b>"+fEur(Math.max(0,np.money-t.m))+"</b>";
+    }else{
+      document.getElementById("nextName").textContent="Tout est atteint";
+      document.getElementById("nextGap").innerHTML="les 4 paliers<br>sont franchis";
+    }
+    buildMarks(t,pt,mt);renderHist();save(state);
+  }
+  function renderHist(){
+    var keys=Object.keys(state.days).filter(function(k){var e=state.days[k];return(e.patients||0)||(e.money||0);}).sort().reverse();
+    document.getElementById("histCount").textContent=keys.length?keys.length+" jours":"";
+    var box=document.getElementById("hist");
+    if(!keys.length){box.innerHTML='<div class="empty">Aucune entrée. Note ton premier patient ci-dessus.</div>';return;}
+    box.innerHTML="";
+    keys.forEach(function(k){
+      var e=state.days[k];var p=k.split("-");var dd=new Date(p[0],p[1]-1,p[2]);
+      var lbl=dd.toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short"});
+      var row=document.createElement("div");row.className="hrow";
+      row.innerHTML='<div class="hactions"><button class="hmod">Modifier</button><button class="hdel">Supprimer</button></div>'+
+        '<div class="hitem"><span class="d">'+lbl+'</span><span class="vals"><span class="pp">'+fInt(e.patients||0)+' pt</span><span class="mm">'+fEur(e.money||0)+'</span></span></div>';
+      var item=row.querySelector(".hitem");
+      var OPEN=164,startX=0,dx=0,drag=false,lastTouch=0;
+      function setOpen(o){
+        item.style.transition="transform .25s";
+        if(o){closeRows(row);row.dataset.open="1";item.style.transform="translateX(-"+OPEN+"px)";}
+        else{row.dataset.open="";item.style.transform="translateX(0)";}
+      }
+      function activate(){ if(row.dataset.open){setOpen(false);} else {openEdit(k);} }
+      item.addEventListener("touchstart",function(ev){startX=ev.touches[0].clientX;dx=0;drag=true;item.style.transition="none";},{passive:true});
+      item.addEventListener("touchmove",function(ev){
+        if(!drag)return;dx=ev.touches[0].clientX-startX;
+        var x=Math.min(0,Math.max(-OPEN,(row.dataset.open?-OPEN:0)+dx));
+        item.style.transform="translateX("+x+"px)";
+      },{passive:true});
+      item.addEventListener("touchend",function(){
+        if(!drag)return;drag=false;lastTouch=Date.now();item.style.transition="transform .25s";
+        if(Math.abs(dx)<10){activate();}
+        else{setOpen(((row.dataset.open?-OPEN:0)+dx)<-OPEN/2);}
+      },{passive:true});
+      item.addEventListener("click",function(){if(Date.now()-lastTouch<600)return;activate();});
+      row.querySelector(".hmod").addEventListener("click",function(ev){ev.stopPropagation();openEdit(k);});
+      row.querySelector(".hdel").addEventListener("click",function(ev){ev.stopPropagation();delete state.days[k];render();});
+      box.appendChild(row);
+    });
+  }
+  function closeRows(except){
+    var rows=document.querySelectorAll(".hrow");
+    for(var i=0;i<rows.length;i++){var r=rows[i];if(r!==except&&r.dataset.open){r.dataset.open="";var it=r.querySelector(".hitem");it.style.transition="transform .25s";it.style.transform="translateX(0)";}}
+  }
+  var modal=document.getElementById("modal"), sheet=document.getElementById("sheet");
+  function closeModal(){modal.hidden=true;sheet.innerHTML="";}
+  modal.addEventListener("click",function(e){if(e.target===modal)closeModal();});
+  function openEdit(k){
+    var e=state.days[k]||{patients:0,money:0};
+    var p=k.split("-");var dd=new Date(p[0],p[1]-1,p[2]);
+    var lbl=dd.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
+    sheet.innerHTML='<h3>'+lbl+'</h3>'+
+      '<label>Patients</label><input id="mP" type="number" inputmode="numeric" value="'+(e.patients||0)+'">'+
+      '<label>Argent encaissé (€)</label><input id="mM" type="number" inputmode="decimal" value="'+(e.money||0)+'">'+
+      '<div class="acts"><button class="btnp ghost" id="mCancel">Annuler</button><button class="btnp save" id="mSave">Enregistrer</button></div>'+
+      '<button class="btnp del" id="mDel">Supprimer ce jour</button>';
+    modal.hidden=false;
+    document.getElementById("mCancel").onclick=closeModal;
+    document.getElementById("mSave").onclick=function(){
+      var pv=Math.max(0,Math.round(parseFloat(document.getElementById("mP").value)||0));
+      var mv=Math.max(0,parseFloat(document.getElementById("mM").value)||0);
+      if(!pv&&!mv)delete state.days[k];else state.days[k]={patients:pv,money:mv};
+      closeModal();render();
+    };
+    document.getElementById("mDel").onclick=function(){delete state.days[k];closeModal();render();};
+  }
+  function openConfirm(msg,onYes){
+    sheet.innerHTML='<h3>'+msg+'</h3><div class="acts"><button class="btnp ghost" id="cN">Annuler</button><button class="btnp del2" id="cY">Effacer</button></div>';
+    modal.hidden=false;
+    document.getElementById("cN").onclick=closeModal;
+    document.getElementById("cY").onclick=function(){closeModal();onYes();};
+  }
+  function buzz(){if(navigator.vibrate){try{navigator.vibrate(8);}catch(e){}}}
+  function bump(n){var d=day();d.patients=Math.max(0,(d.patients||0)+n);render();if(n>0)buzz();}
+  document.getElementById("plus1").addEventListener("click",function(){bump(1);});
+  document.getElementById("plus5").addEventListener("click",function(){bump(5);});
+  document.getElementById("minus").addEventListener("click",function(){bump(-1);});
+  function commitMoney(){
+    var inp=document.getElementById("moneyInput");var v=parseFloat(inp.value);
+    if(!isNaN(v)&&v!==0){day().money=Math.max(0,(day().money||0)+v);inp.value="";render();buzz();}
+  }
+  document.getElementById("moneyInput").addEventListener("keydown",function(e){if(e.key==="Enter"){commitMoney();this.blur();}});
+  document.getElementById("moneyInput").addEventListener("blur",commitMoney);
+  render();
+})();
+</script>
+</body>
+</html>
