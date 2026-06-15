@@ -238,7 +238,7 @@
     <div class="stat-row">
       <div class="left">
         <div class="v" id="sEurPat">—</div>
-        <div class="k">€ réel / patient</div>
+        <div class="k">Moy. € / jour</div>
       </div>
       <div class="right">
         <div class="stat-row-title">Objectif €</div>
@@ -323,9 +323,9 @@
     var avg=t.days?(Math.round(t.p/t.days*10)/10):0;
     document.getElementById("sAvg").textContent=t.days?(avg.toFixed(1).replace(".",",")):"—";
     var daysLeft=TOTAL_DAYS-t.days;
-    // Revenu réel par patient (affiché seulement, pas utilisé pour la projection)
-    var eurPerPatDisplay=(t.p>0&&t.m>0)?(t.m/t.p):null;
-    document.getElementById("sEurPat").textContent=eurPerPatDisplay?fEur(eurPerPatDisplay):"—";
+    // Moyenne €/jour (affiché seulement, pas utilisé pour la projection)
+    var eurJourDisplay=t.days>0?Math.round(t.m/t.days):null;
+    document.getElementById("sEurPat").textContent=eurJourDisplay?fEur(eurJourDisplay):"—";
     // Taux fixe théorique pour la projection future (30€ × 80% retro)
     var EUR_PER_PAT_PROJ=24;
 
