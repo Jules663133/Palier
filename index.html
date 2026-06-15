@@ -236,7 +236,7 @@
 
   <!-- PAGE 2 : stats & historique -->
   <div class="snap-page page-stats">
-  <button onclick="openAddDay()" style="display:block;width:100%;background:none;border:1.5px solid var(--hair);color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;padding:14px;border-radius:12px;cursor:pointer;margin-bottom:20px;text-align:center;">+ Ajouter un jour passé</button>
+  <button id="btnAddDay" style="display:block;width:100%;background:none;border:1.5px solid var(--hair);color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;padding:14px;border-radius:12px;cursor:pointer;margin-bottom:20px;text-align:center;">+ Ajouter un jour passé</button>
   <div class="stats">
 
     <!-- Ligne 1 : objectif nombre de patients -->
@@ -506,6 +506,7 @@
   document.getElementById("moneyInput").addEventListener("keydown",function(e){if(e.key==="Enter"){commitMoney();this.blur();}});
   document.getElementById("moneyInput").addEventListener("blur",commitMoney);
   render();
+  document.getElementById("btnAddDay").addEventListener("click", openAddDay);
 })();
 </script>
 </body>
