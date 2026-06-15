@@ -131,6 +131,7 @@
   .stat-row .right{text-align:right}
   .stat-row .right .pal{font-family:"Instrument Serif",serif;font-size:18px}
   .stat-row .right .pal-sub{font-size:10px;color:var(--muted);margin-top:2px}
+  .stat-row-title{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);text-align:right;margin-bottom:5px}
   .pal-list{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
   .pal-item{text-align:right;transition:color .2s}
   .pal-item .pn{font-size:12px;font-weight:600;color:var(--faint)}
@@ -218,26 +219,39 @@
   <!-- PAGE 2 : stats & historique -->
   <div class="snap-page page-stats">
   <div class="stats">
+
+    <!-- Ligne 1 : objectif nombre de patients -->
     <div class="stat-row">
       <div class="left">
         <div class="v" id="sAvg">—</div>
-        <div class="k">Patients / jour</div>
+        <div class="k">Moy. patients/j</div>
       </div>
       <div class="right">
-        <div class="pal-list" id="sPalList">
-          <div class="pal-item" id="pal0"></div>
-          <div class="pal-item" id="pal1"></div>
-          <div class="pal-item" id="pal2"></div>
-          <div class="pal-item" id="pal3"></div>
-        </div>
+        <div class="stat-row-title">Objectif patients</div>
+        <div class="pal-list" id="palPat0"><div class="pal-item" id="pp0"></div><div class="pal-item" id="pp1"></div><div class="pal-item" id="pp2"></div><div class="pal-item" id="pp3"></div></div>
       </div>
     </div>
+
+    <!-- Ligne 2 : objectif €, ajusté au revenu réel/patient -->
+    <div class="stat-row">
+      <div class="left">
+        <div class="v" id="sEurPat">—</div>
+        <div class="k">€ réel / patient</div>
+      </div>
+      <div class="right">
+        <div class="stat-row-title">Objectif €</div>
+        <div class="pal-list" id="palMon0"><div class="pal-item" id="pm0"></div><div class="pal-item" id="pm1"></div><div class="pal-item" id="pm2"></div><div class="pal-item" id="pm3"></div></div>
+      </div>
+    </div>
+
+    <!-- Ligne 3 : net estimé -->
     <div class="stat-row">
       <div class="left">
         <div class="v" id="sNet">—</div>
         <div class="k">Net estimé</div>
       </div>
     </div>
+
   </div>
 
   <details>
@@ -315,23 +329,37 @@
     var avg=t.days?(Math.round(t.p/t.days*10)/10):0;
     document.getElementById("sAvg").textContent=t.days?(avg.toFixed(1).replace(".",",")):"—";
     var daysLeft=TOTAL_DAYS-t.days;
-    var firstNext=true;
+    // Revenu réel par patient (fallback 24€ = 30€ × 80% si pas encore de données)
+    var eurPerPat=(t.p>0&&t.m>0)?(t.m/t.p):24;
+    document.getElementById("sEurPat").textContent=t.p>0?fEur(eurPerPat):"—";
+
+    // Ligne 1 : objectif nombre de patients
+    var fn1=true;
     PALIERS.forEach(function(pl,i){
-      var el=document.getElementById("pal"+i);
-      if(!el)return;
-      var reached=t.p>=pl.patients;
-      if(reached){
-        el.innerHTML='<div class="pn">✓ '+pl.name+'</div>';
-        el.className="pal-item on";
+      var el=document.getElementById("pp"+i);if(!el)return;
+      if(t.p>=pl.patients){
+        el.innerHTML='<div class="pn">✓ '+pl.name+'</div>';el.className="pal-item on";
       } else {
-        var needed=pl.patients-t.p;
-        var rateStr=daysLeft>0?(Math.ceil(needed/daysLeft*10)/10).toFixed(1).replace(".",",")+" pts/j":"—";
-        var sub=daysLeft>0?rateStr+" sur "+daysLeft+" j restants":"période terminée";
-        el.innerHTML='<div class="pn">'+(firstNext?"→ ":"")+pl.name+'</div><div class="pr">'+sub+'</div>';
-        el.className="pal-item"+(firstNext?" next":"");
-        firstNext=false;
+        var rate=daysLeft>0?(Math.ceil((pl.patients-t.p)/daysLeft*10)/10).toFixed(1).replace(".",",")+" pts/j":"—";
+        el.innerHTML='<div class="pn">'+(fn1?"→ ":"")+pl.name+'</div><div class="pr">'+rate+" sur "+daysLeft+" j"+'</div>';
+        el.className="pal-item"+(fn1?" next":"");fn1=false;
       }
     });
+
+    // Ligne 2 : objectif €, converti en pts/j selon revenu réel par patient
+    var fn2=true;
+    PALIERS.forEach(function(pl,i){
+      var el=document.getElementById("pm"+i);if(!el)return;
+      if(t.m>=pl.money){
+        el.innerHTML='<div class="pn">✓ '+pl.name+'</div>';el.className="pal-item on";
+      } else {
+        var patsNeeded=(pl.money-t.m)/eurPerPat;
+        var rate=daysLeft>0?(Math.ceil(patsNeeded/daysLeft*10)/10).toFixed(1).replace(".",",")+" pts/j":"—";
+        el.innerHTML='<div class="pn">'+(fn2?"→ ":"")+pl.name+'</div><div class="pr">'+rate+" sur "+daysLeft+" j"+'</div>';
+        el.className="pal-item"+(fn2?" next":"");fn2=false;
+      }
+    });
+
     document.getElementById("sNet").innerHTML=fEur(t.m*NET_RATE);
     var np=nextPalier(t);
     if(np){
