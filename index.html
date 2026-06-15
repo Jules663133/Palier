@@ -265,12 +265,14 @@
   </div>
 
   <details>
-    <summary><span>Historique</span><div style="display:flex;align-items:center;gap:10px;"><span id="histCount"></span><button onclick="event.stopPropagation();openAddDay()" style="font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid var(--hair);background:none;color:var(--muted);font-family:inherit;cursor:pointer;">+ Ajouter</button></div></summary>
+    <summary><span>Historique</span><span id="histCount"></span></summary>
     <div id="hist"></div>
   </details>
 
   </div><!-- /page-stats -->
 </div><!-- /snap-wrap -->
+
+  <button onclick="openAddDay()" style="width:100%;background:none;border:1px solid var(--hair);color:var(--muted);font-family:inherit;font-size:12px;padding:12px;border-radius:10px;cursor:pointer;margin-top:8px;">+ Ajouter un jour passé</button>
 
   <div id="modal" class="modal" hidden><div class="sheet" id="sheet"></div></div>
 
@@ -450,18 +452,15 @@
   }
   function openAddDay(){
     sheet.innerHTML='<h3>Ajouter un jour</h3>'+
-      '<label>Date</label><input id="addDate" type="text" placeholder="JJ/MM/AAAA" maxlength="10"'+
-      ' oninput="var v=this.value.replace(/[^0-9]/g,\'\');if(v.length>=5)v=v.slice(0,2)+\'/\'+v.slice(2,4)+\'/\'+v.slice(4,8);else if(v.length>=3)v=v.slice(0,2)+\'/\'+v.slice(2);this.value=v;">'+
-      '<label>Patients</label><input id="addP" type="number" inputmode="numeric" placeholder="0">'+
-      '<label>Argent encaissé (€)</label><input id="addM" type="number" inputmode="decimal" placeholder="0">'+
-      '<div class="acts"><button class="btnp ghost" id="addCancel">Annuler</button><button class="btnp save" id="addSave">Ajouter</button></div>';
+      '<label>Date</label><input id="addDate" type="date" max="'+new Date().toISOString().slice(0,10)+'">'+
+      '<label>Patients</label><input id="addP" type="number" inputmode="numeric" placeholder="0" min="0">'+
+      '<label>Argent encaissé (€)</label><input id="addM" type="number" inputmode="decimal" placeholder="0" min="0">'+
+      '<div class="acts"><button class="btnp ghost" id="addCancel">Annuler</button><button class="btnp save" id="addSave">Enregistrer</button></div>';
     modal.hidden=false;
     document.getElementById("addCancel").onclick=closeModal;
     document.getElementById("addSave").onclick=function(){
-      var raw=document.getElementById("addDate").value.trim();
-      var parts=raw.split("/");
-      if(parts.length!==3)return;
-      var key=parts[2]+"-"+parts[1].padStart(2,"0")+"-"+parts[0].padStart(2,"0");
+      var key=document.getElementById("addDate").value;
+      if(!key)return;
       var pv=Math.max(0,Math.round(parseFloat(document.getElementById("addP").value)||0));
       var mv=Math.max(0,parseFloat(document.getElementById("addM").value)||0);
       if(pv||mv){state.days[key]={patients:pv,money:mv};}
