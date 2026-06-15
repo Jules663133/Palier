@@ -123,12 +123,16 @@
   .today{margin-top:14px;font-size:12px;color:var(--muted)} .today b{color:var(--ink);font-weight:600}
 
   /* stats — ligne unique */
-  .stats{display:flex;justify-content:space-between;border-top:1px solid var(--hair);
-         border-bottom:1px solid var(--hair);padding:16px 0;margin-bottom:24px}
-  .stat{text-align:center;flex:1}
-  .stat .v{font-family:"Instrument Serif",serif;font-size:22px}
-  .stat .k{font-size:9.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
-  .stat+.stat{border-left:1px solid var(--hair2)}
+  .stats{border-top:1px solid var(--hair);margin-bottom:24px}
+  .stat-row{display:flex;justify-content:space-between;align-items:center;
+            padding:14px 0;border-bottom:1px solid var(--hair2)}
+  .stat-row .left .v{font-family:"Instrument Serif",serif;font-size:28px;line-height:1}
+  .stat-row .left .k{font-size:9.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+  .stat-row .right{text-align:right}
+  .stat-row .right .pal{font-family:"Instrument Serif",serif;font-size:18px}
+  .stat-row .right .pal-sub{font-size:10px;color:var(--muted);margin-top:2px}
+  .pal-none{color:var(--faint)}
+  .pal-ok{color:var(--pat)}
 
   details{margin-bottom:8px}
   summary{cursor:pointer;list-style:none;padding:6px 0 14px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
@@ -209,8 +213,22 @@
   <!-- PAGE 2 : stats & historique -->
   <div class="snap-page page-stats">
   <div class="stats">
-    <div class="stat"><div class="v" id="sAvg">0</div><div class="k">Patients / j</div></div>
-    <div class="stat"><div class="v" id="sNet">0&nbsp;€</div><div class="k">Net estimé</div></div>
+    <div class="stat-row">
+      <div class="left">
+        <div class="v" id="sAvg">—</div>
+        <div class="k">Patients / jour</div>
+      </div>
+      <div class="right">
+        <div class="pal" id="sPalName">—</div>
+        <div class="pal-sub" id="sPalSub"></div>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="left">
+        <div class="v" id="sNet">—</div>
+        <div class="k">Net estimé</div>
+      </div>
+    </div>
   </div>
 
   <details>
@@ -226,14 +244,18 @@
 <script>
 (function(){
   "use strict";
-  var PAT_MAX=3475, MONEY_MAX=83400;
+  var PAT_MAX=3475, MONEY_MAX=83400, TOTAL_DAYS=126;
   var PALIERS=[
-    {name:"Équilibre",   patients:2792, money:67000},
-    {name:"Plafond 30 %",patients:3038, money:72900},
-    {name:"Prévisionnel",patients:3158, money:75800},
-    {name:"+10 000 €",   patients:3475, money:83400}
+    {name:"Équilibre",    patients:2792, money:67000, pday:22.2},
+    {name:"Plafond 30 %", patients:3038, money:72900, pday:24.1},
+    {name:"Prévisionnel", patients:3158, money:75800, pday:25.1},
+    {name:"+10 000 €",    patients:3475, money:83400, pday:27.6}
   ];
   var NET_RATE=0.657;
+  function palierFromAvg(avg){
+    for(var i=PALIERS.length-1;i>=0;i--){if(avg>=PALIERS[i].pday)return PALIERS[i];}
+    return null;
+  }
   var KEY="paliers_v1", mem=null;
   function load(){try{var r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return mem||{days:{}};}
   function save(s){mem=s;try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){}}
@@ -281,7 +303,14 @@
     var d=day();
     document.getElementById("todayPat").textContent=fInt(d.patients);
     document.getElementById("todayMoney").innerHTML=fEur(d.money);
-    document.getElementById("sAvg").textContent=t.days?fInt(t.p/t.days):"0";
+    var avg=t.days?(Math.round(t.p/t.days*10)/10):0;
+    document.getElementById("sAvg").textContent=t.days?(avg.toFixed(1).replace(".",",")):"—";
+    var pl=palierFromAvg(avg);
+    var palName=document.getElementById("sPalName");
+    var palSub=document.getElementById("sPalSub");
+    if(!t.days){palName.textContent="—";palName.className="pal";palSub.textContent="";}
+    else if(!pl){palName.textContent="En dessous";palName.className="pal pal-none";palSub.textContent="< 22,2 pts/j pour l'équilibre";}
+    else{palName.textContent=pl.name+" ✓";palName.className="pal pal-ok";palSub.textContent=pl.pday.toFixed(1).replace(".",",")+" pts/j minimum";}
     document.getElementById("sNet").innerHTML=fEur(t.m*NET_RATE);
     var np=nextPalier(t);
     if(np){
