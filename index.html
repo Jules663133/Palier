@@ -367,8 +367,8 @@
     // Moyenne €/jour (affiché seulement, pas utilisé pour la projection)
     var eurJourDisplay=t.days>0?Math.round(t.m/t.days):null;
     document.getElementById("sEurPat").textContent=eurJourDisplay?fEur(eurJourDisplay):"—";
-    // Taux fixe théorique pour la projection future (30€ × 80% retro)
-    var EUR_PER_PAT_PROJ=24;
+    // Taux réel moyen par patient pour la projection € (fallback 24€ si pas assez de données)
+    var EUR_PER_PAT_PROJ=(t.p>0&&t.m>0)?(t.m/t.p):24;
 
     var moneyAvg=t.days>0?t.m/t.days:0;
 
