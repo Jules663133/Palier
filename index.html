@@ -191,10 +191,9 @@
   .obj-edit-row{display:flex;align-items:center;gap:7px;margin-bottom:9px;}
   .obj-edit-row input{border:1px solid var(--hair);border-radius:10px;background:none;color:var(--ink);
                       font-family:inherit;font-size:15px;padding:11px 13px;
-                      -webkit-appearance:none;appearance:none;box-sizing:border-box;}
+                      -webkit-appearance:none;appearance:none;box-sizing:border-box;
+                      flex:1;min-width:0;}
   .obj-edit-row input:focus{outline:none;border-color:var(--pat)}
-  .obj-edit-name{flex:2;min-width:0;}
-  .obj-edit-offset{flex:1;min-width:0;}
   .obj-del-btn{background:none;border:none;color:#C0493B;font-size:17px;cursor:pointer;padding:6px;flex-shrink:0;}
   .btn-add-row{width:100%;background:none;border:1px dashed var(--faint);color:var(--muted);border-radius:11px;
                padding:11px;font-family:inherit;font-size:13px;cursor:pointer;margin-top:2px;transition:border-color .2s,color .2s;}
@@ -619,6 +618,12 @@
     };
   }
 
+  function nomDeOffset(v){
+    if(v===0)return"0 €";
+    var abs=new Intl.NumberFormat("fr-FR").format(Math.abs(v));
+    return(v>0?"+":"−")+abs+" €";
+  }
+
   function renderObjRows(){
     var container=document.getElementById("objRows");
     if(!container)return;
@@ -627,11 +632,9 @@
       var row=document.createElement("div");
       row.className="obj-edit-row";
       row.innerHTML=
-        '<input class="obj-edit-name"   type="text"   placeholder="Nom (ex : 0 €)"  value="'+esc(o.nom)+'"  data-idx="'+idx+'" data-f="nom">'+
-        '<input class="obj-edit-offset" type="number" placeholder="Écart €" value="'+o.offset+'" data-idx="'+idx+'" data-f="offset">'+
+        '<input class="obj-edit-offset" type="number" inputmode="numeric" placeholder="Écart net (ex : 5000)" value="'+o.offset+'" data-idx="'+idx+'">'+
         '<button class="obj-del-btn" data-idx="'+idx+'" title="Supprimer">✕</button>';
-      row.querySelector('[data-f="nom"]').addEventListener("input",function(e){editOb[+e.target.dataset.idx].nom=e.target.value;});
-      row.querySelector('[data-f="offset"]').addEventListener("input",function(e){editOb[+e.target.dataset.idx].offset=parseFloat(e.target.value)||0;});
+      row.querySelector('.obj-edit-offset').addEventListener("input",function(e){editOb[+e.target.dataset.idx].offset=parseFloat(e.target.value)||0;});
       row.querySelector(".obj-del-btn").addEventListener("click",function(e){editOb.splice(+e.target.dataset.idx,1);renderObjRows();});
       container.appendChild(row);
     });
@@ -640,10 +643,10 @@
   function saveSettings(){
     /* Sync DOM → editOb */
     document.querySelectorAll(".obj-edit-row").forEach(function(row,idx){
-      var inps=row.querySelectorAll("input");
-      if(editOb[idx]){editOb[idx].nom=inps[0].value;editOb[idx].offset=parseFloat(inps[1].value)||0;}
+      var inp=row.querySelector("input");
+      if(editOb[idx]&&inp){editOb[idx].offset=parseFloat(inp.value)||0; editOb[idx].nom=nomDeOffset(editOb[idx].offset);}
     });
-    var valid=editOb.filter(function(o){return o.nom.trim();});
+    var valid=editOb.filter(function(o){return o.nom;});
     if(!valid.length){return;}
     valid.sort(function(a,b){return a.offset-b.offset;});
 
