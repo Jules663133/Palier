@@ -334,7 +334,7 @@
 
   /* ── ÉTAT ───────────────────────────────────────────── */
   var KEY_DAYS = "paliers_v2";
-  var KEY_CFG  = "paliers_cfg_v1";
+  var KEY_CFG  = "paliers_cfg_v2";
   var state    = {days:{}};
   var cfg      = { params: copy(DPARAMS), objectifs: DOBJ.map(copy) };
   var editOb   = [], editPtmp = {};
@@ -398,6 +398,7 @@
     return {p:p,m:m,days:days};
   }
   function day(){ var k=todayKey(); if(!state.days[k])state.days[k]={patients:0,money:0}; return state.days[k]; }
+  function saveDataIfDirty(){ var d=day(); if(d.patients||d.money) saveData(); }
   function calcDaysLeft(){
     var holidays=["2026-07-14","2026-11-11","2026-12-25"];
     var start=new Date(2026,5,22); start.setHours(0,0,0,0);
@@ -411,7 +412,7 @@
   function buildMarks(t, paliers){
     var PMAX=paliers.length?paliers[paliers.length-1].pat :1;
     var MMAX=paliers.length?paliers[paliers.length-1].brut:1;
-    var H=250, minGap=15;
+    var H=320, minGap=15;
     function go(prefix,cls,key,total,max,targetVal,fmt){
       var marks=document.getElementById("marks"+prefix), labs=document.getElementById("labs"+prefix);
       if(!marks||!labs)return;
@@ -495,7 +496,7 @@
 
     buildMarks(t,paliers);
     renderHist();
-    saveData();
+    if(t.p||t.m) saveData();
   }
 
   /* ── HISTORIQUE ─────────────────────────────────────── */
