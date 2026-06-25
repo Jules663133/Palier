@@ -320,7 +320,7 @@
 
   /* ── VALEURS PAR DÉFAUT ─────────────────────────────── */
   var DPARAMS = {
-    base:46510, jours:127, netParConsult:24,
+    base:46510, jours:134, netParConsult:24,
     tauxURSSAF:0.12, tauxCARMF:0.12, abattement:0.34,
     baseImposableAcquise:36444, plafond30:84577
   };
@@ -333,7 +333,7 @@
   ];
 
   /* ── ÉTAT ───────────────────────────────────────────── */
-  var KEY_DAYS = "paliers_v1";
+  var KEY_DAYS = "paliers_v2";
   var KEY_CFG  = "paliers_cfg_v1";
   var state    = {days:{}};
   var cfg      = { params: copy(DPARAMS), objectifs: DOBJ.map(copy) };
@@ -400,7 +400,7 @@
   function day(){ var k=todayKey(); if(!state.days[k])state.days[k]={patients:0,money:0}; return state.days[k]; }
   function calcDaysLeft(){
     var holidays=["2026-07-14","2026-11-11","2026-12-25"];
-    var start=new Date(2026,5,12); start.setHours(0,0,0,0);
+    var start=new Date(2026,5,25); start.setHours(0,0,0,0);
     var today=new Date(); today.setHours(0,0,0,0);
     var elapsed=0, d=new Date(start);
     while(d<today){ var dow=d.getDay(),iso=d.toISOString().slice(0,10); if(dow!==0&&dow!==6&&!holidays.includes(iso))elapsed++; d.setDate(d.getDate()+1); }
