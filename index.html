@@ -58,8 +58,8 @@
 
   /* header bar avec gear */
   .topbar{display:flex;justify-content:flex-end;margin-bottom:4px;}
-  .btn-gear{background:none;border:none;color:var(--faint);font-size:17px;cursor:pointer;
-            padding:4px 2px;border-radius:7px;transition:color .18s;line-height:1;}
+  .btn-gear{background:none;border:none;color:var(--faint);font-size:26px;cursor:pointer;
+            padding:2px 4px;border-radius:8px;transition:color .18s;line-height:1;}
   .btn-gear:active{color:var(--ink);}
 
   /* hero */
@@ -199,11 +199,14 @@
   .btn-add-row{width:100%;background:none;border:1px dashed var(--faint);color:var(--muted);border-radius:11px;
                padding:11px;font-family:inherit;font-size:13px;cursor:pointer;margin-top:2px;transition:border-color .2s,color .2s;}
   .btn-add-row:active{border-color:var(--pat);color:var(--pat);}
-  .cfg-params{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-  .cfg-param .cfg-lbl{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
-                      font-weight:600;margin-bottom:5px;display:block;}
-  .cfg-param input{width:100%;border:1px solid var(--hair);border-radius:10px;background:none;color:var(--ink);
-                   font-family:inherit;font-size:14px;padding:10px 12px;
+  .cfg-params{display:flex;flex-direction:column;gap:0;}
+  .cfg-param{display:flex;align-items:center;justify-content:space-between;gap:14px;
+             padding:10px 0;border-bottom:1px solid var(--hair2);}
+  .cfg-param:last-child{border-bottom:none;}
+  .cfg-param .cfg-lbl{font-size:13px;color:var(--ink);flex:1;margin:0;}
+  .cfg-param input{width:96px;flex-shrink:0;border:1px solid var(--hair);border-radius:10px;
+                   background:none;color:var(--ink);font-family:inherit;font-size:14px;
+                   padding:9px 11px;text-align:right;
                    -webkit-appearance:none;appearance:none;box-sizing:border-box;}
   .cfg-param input:focus{outline:none;border-color:var(--pat);}
 
