@@ -467,14 +467,15 @@
       });
     }
 
-    /* OBJECTIF € — rythme en €/j */
+    /* OBJECTIF € — patients/j nécessaires pour atteindre la somme cible */
     var elPM=document.getElementById("palMon");
     if(elPM){
       elPM.innerHTML=""; var fn2=true;
       var monAvg=t.days>0?t.m/t.days:0;
       paliers.forEach(function(pl){
         var onPace=t.days>0&&monAvg>=pl.eurJ;
-        var rate=daysLeft>0?fE(Math.max(0,Math.ceil((pl.brut-t.m)/daysLeft)))+"/j":"—";
+        var patsLeft=Math.max(0,(pl.brut-t.m)/cfg.params.netParConsult);
+        var rate=daysLeft>0?fD(patsLeft/daysLeft)+" pts/j":"—";
         var div=document.createElement("div");
         div.className="pal-item"+(onPace?" on":(fn2?" next":""));
         div.innerHTML='<div class="pn">'+(onPace?"✓ ":(fn2?"→ ":''))+esc(pl.nom)+'</div><div class="pr">'+rate+'</div>';
