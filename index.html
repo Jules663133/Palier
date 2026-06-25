@@ -676,7 +676,7 @@
   document.getElementById("minus").addEventListener("click",function(){bump(-1);});
   function commitMoney(){
     var inp=document.getElementById("moneyInput");var v=parseFloat(inp.value);
-    if(!isNaN(v)&&v!==0){day().money=Math.max(0,(day().money||0)+v);inp.value="";render();buzz();}
+    if(!isNaN(v)&&v!==0){day().money=Math.max(0,v);inp.value="";render();buzz();}
   }
   document.getElementById("moneyInput").addEventListener("keydown",function(e){if(e.key==="Enter"){commitMoney();this.blur();}});
   document.getElementById("moneyInput").addEventListener("blur",commitMoney);
