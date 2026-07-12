@@ -320,7 +320,7 @@
 
   /* ── VALEURS PAR DÉFAUT ─────────────────────────────── */
   var DPARAMS = {
-    base:42040, jours:124, netParConsult:24,
+    base:42040, jours:121, netParConsult:24,
     tauxURSSAF:0.12, tauxCARMF:0.12, abattement:0.34,
     baseImposableAcquise:39024, plafond30:84577
   };
@@ -400,7 +400,7 @@
   function day(){ var k=todayKey(); if(!state.days[k])state.days[k]={patients:0,money:0}; return state.days[k]; }
   function saveDataIfDirty(){ var d=day(); if(d.patients||d.money) saveData(); }
   function calcDaysLeft(){
-    var holidays=["2026-07-06","2026-07-07","2026-07-08","2026-07-09","2026-07-10","2026-08-24","2026-08-25","2026-08-26","2026-08-27","2026-08-28","2026-08-31","2026-09-01","2026-09-02","2026-09-17","2026-10-07"];
+    var holidays=["2026-07-06","2026-07-07","2026-07-08","2026-07-09","2026-07-10","2026-07-14","2026-08-24","2026-08-25","2026-08-26","2026-08-27","2026-08-28","2026-08-31","2026-09-01","2026-09-02","2026-09-17","2026-10-07","2026-11-11","2026-12-25"];
     var start=new Date(2026,5,22); start.setHours(0,0,0,0);
     var today=new Date(); today.setHours(0,0,0,0);
     var elapsed=0, d=new Date(start);
