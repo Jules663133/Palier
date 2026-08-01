@@ -542,9 +542,8 @@
   function weekRangeLabel(k){
     var start=dateFromKey(k), end=new Date(start);
     end.setDate(end.getDate()+6);
-    var sameMonth=start.getMonth()===end.getMonth()&&start.getFullYear()===end.getFullYear();
-    var s=sameMonth?String(start.getDate()):start.toLocaleDateString("fr-FR",{day:"numeric",month:"short"});
-    return s+" – "+end.toLocaleDateString("fr-FR",{day:"numeric",month:"short"});
+    var o={day:"numeric",month:"short"};   /* mois toujours affiché des deux côtés */
+    return start.toLocaleDateString("fr-FR",o)+" – "+end.toLocaleDateString("fr-FR",o);
   }
   function renderHist(){
     var keys=Object.keys(state.days).filter(function(k){var e=state.days[k];return(e.patients||0)||(e.money||0);}).sort();
