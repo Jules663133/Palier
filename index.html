@@ -18,6 +18,7 @@
     --paper:#FAFBFB; --ink:#15211F; --muted:#8A9694; --faint:#B9C2C0;
     --hair:rgba(21,33,31,.10); --hair2:rgba(21,33,31,.06);
     --track:#ECEEED; --pat:#0F766E; --money:#A8761F;
+    --muted2:#5F6D6B;   /* gris foncé — textes secondaires de l'historique */
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0}
@@ -160,13 +161,12 @@
   .week-summary:active{opacity:.55}
   .week-copy{min-width:0;display:flex;flex-direction:column;gap:5px;}
   .week-label{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:20px;line-height:1;
-              letter-spacing:.01em;color:var(--faint);transition:color .25s;}
-  .week-group.open .week-label{color:var(--ink);}
-  .week-days-count{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);}
+              letter-spacing:.01em;color:var(--ink);}
+  .week-days-count{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted2);}
   .week-totals{display:flex;align-items:baseline;gap:12px;white-space:nowrap;font-size:12px;}
   .week-totals .pp{color:var(--pat);font-weight:500;}
   .week-totals .mm{color:var(--money);font-weight:500;}
-  .week-chevron{color:var(--faint);line-height:0;align-self:center;transition:transform .28s cubic-bezier(.22,1,.36,1);}
+  .week-chevron{color:var(--muted);line-height:0;align-self:center;transition:transform .28s cubic-bezier(.22,1,.36,1);}
   .week-group.open .week-chevron{transform:rotate(90deg);}
   .week-days{overflow:hidden;transition:height .34s cubic-bezier(.22,1,.36,1),opacity .26s ease;}
   .week-days[hidden]{display:none;}
@@ -176,10 +176,10 @@
          padding:9px 0;font-size:13px;text-align:left;transition:opacity .2s;
          -webkit-appearance:none;appearance:none;}
   .hitem:active{opacity:.5}
-  .hitem .d{color:var(--muted);font-size:11.5px;letter-spacing:.02em}
+  .hitem .d{color:var(--muted2);font-size:11.5px;letter-spacing:.02em}
   .hitem .vals{display:flex;gap:14px;align-items:baseline}
   .hitem .pp{color:var(--pat);font-weight:500} .hitem .mm{color:var(--money);font-weight:500}
-  .empty{color:var(--faint);font-size:13px;padding:16px 0;text-align:center}
+  .empty{color:var(--muted2);font-size:13px;padding:16px 0;text-align:center}
   .reset{width:100%;background:none;border:none;color:var(--faint);font-family:inherit;font-size:12px;
          letter-spacing:.04em;cursor:pointer;padding:16px 0 4px}
   .modal{position:fixed;inset:0;background:rgba(21,33,31,0);display:flex;align-items:flex-end;justify-content:center;z-index:50;
@@ -331,8 +331,8 @@
   <!-- PAGE 3 : HISTORIQUE -->
   <div class="snap-page page-stats">
   <div style="display:flex;align-items:center;justify-content:space-between;padding:0 0 14px;">
-    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--muted);">Historique <span id="histCount" style="font-weight:400;opacity:.6;"></span></span>
-    <button id="btnAddDay" style="background:none;border:1px solid var(--hair);color:var(--muted);font-size:13px;font-weight:600;padding:3px 12px;border-radius:99px;cursor:pointer;font-family:inherit;letter-spacing:.04em;">+ Ajouter</button>
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--ink);">Historique <span id="histCount" style="font-weight:400;color:var(--muted2);"></span></span>
+    <button id="btnAddDay" style="background:none;border:1px solid var(--hair);color:var(--muted2);font-size:13px;font-weight:600;padding:3px 12px;border-radius:99px;cursor:pointer;font-family:inherit;letter-spacing:.04em;">+ Ajouter</button>
   </div>
   <div id="hist"></div>
   </div><!-- /page-hist -->
