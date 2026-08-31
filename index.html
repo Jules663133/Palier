@@ -433,12 +433,19 @@
   function day(){ var k=todayKey(); if(!state.days[k])state.days[k]={patients:0,money:0}; return state.days[k]; }
   function saveDataIfDirty(){ var d=day(); if(d.patients||d.money) saveData(); }
   function calcDaysLeft(){
-    /* 70 jours travaillables du 4 septembre 2026 au 8 janvier 2027 inclus */
-    var holidays=["2026-11-01","2026-11-11","2026-12-25","2027-01-01"];
-    var start=new Date(2026,8,4); start.setHours(0,0,0,0);
+    /* 70 jours travaillables du 4 septembre au 31 décembre 2026 inclus */
+    var holidays=["2026-11-01","2026-11-11","2026-12-25"];
+    var vacationMondays=["2026-10-19","2026-10-26","2026-12-21","2026-12-28"];
+    var start=new Date(2026,8,4), end=new Date(2026,11,31);
+    start.setHours(0,0,0,0); end.setHours(0,0,0,0);
     var today=new Date(); today.setHours(0,0,0,0);
     var elapsed=0, d=new Date(start);
-    while(d<today){ var dow=d.getDay(),iso=dateToKey(d); if(dow!==0&&dow!==1&&dow!==6&&holidays.indexOf(iso)===-1)elapsed++; d.setDate(d.getDate()+1); }
+    while(d<today&&d<=end){
+      var dow=d.getDay(),iso=dateToKey(d);
+      var worked=(dow>=2&&dow<=5)||vacationMondays.indexOf(iso)!==-1;
+      if(worked&&holidays.indexOf(iso)===-1)elapsed++;
+      d.setDate(d.getDate()+1);
+    }
     return Math.max(0,cfg.params.jours-elapsed);
   }
 
