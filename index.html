@@ -351,10 +351,10 @@
     baseImposableAcquise:60024.17, plafond30:84577
   };
   var DOBJ = [
-    {id:"1", nom:"0 €",      offset:0,     brut:41496},
-    {id:"2", nom:"5 000 €",  offset:5000,  brut:50252},
-    {id:"3", nom:"10 000 €", offset:10000, brut:59009},
-    {id:"4", nom:"15 000 €", offset:15000, brut:67765}
+    {id:"1", nom:"0 €",      offset:0    },
+    {id:"2", nom:"5 000 €",  offset:5000 },
+    {id:"3", nom:"10 000 €", offset:10000},
+    {id:"4", nom:"15 000 €", offset:15000}
   ];
 
   /* ── ÉTAT ───────────────────────────────────────────── */
@@ -407,8 +407,8 @@
   function calcPaliers(){
     var p=cfg.params;
     return cfg.objectifs.map(function(o){
-      var brut=typeof o.brut==="number"?o.brut:brutDeNet(p.base+o.offset,p);
-      var pat =Math.round(brut/p.netParConsult);
+      var brut=Math.ceil(brutDeNet(p.base+o.offset,p));
+      var pat =Math.ceil(brut/p.netParConsult);
       return {nom:o.nom, offset:o.offset, brut:brut, pat:pat,
               patJ:pat/p.jours, eurJ:brut/p.jours};
     });
@@ -776,7 +776,7 @@
       row.innerHTML=
         '<input class="obj-edit-offset" type="number" inputmode="numeric" placeholder="Écart net (ex : 5000)" value="'+o.offset+'" data-idx="'+idx+'">'+
         '<button class="obj-del-btn" data-idx="'+idx+'" title="Supprimer">✕</button>';
-      row.querySelector('.obj-edit-offset').addEventListener("input",function(e){var o=editOb[+e.target.dataset.idx];o.offset=parseFloat(e.target.value)||0;delete o.brut;});
+      row.querySelector('.obj-edit-offset').addEventListener("input",function(e){editOb[+e.target.dataset.idx].offset=parseFloat(e.target.value)||0;});
       row.querySelector(".obj-del-btn").addEventListener("click",function(e){editOb.splice(+e.target.dataset.idx,1);renderObjRows();});
       container.appendChild(row);
     });
