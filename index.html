@@ -346,9 +346,9 @@
 
   /* ── VALEURS PAR DÉFAUT ─────────────────────────────── */
   var DPARAMS = {
-    base:42040, jours:70, netParConsult:24,
+    base:26394.60, jours:70, netParConsult:24,
     tauxURSSAF:0.12, tauxCARMF:0.12, abattement:0.34,
-    baseImposableAcquise:39024, plafond30:84577
+    baseImposableAcquise:60024.17, plafond30:84577
   };
   var DOBJ = [
     {id:"1", nom:"0 €",      offset:0,     brut:41496},
@@ -360,7 +360,7 @@
   /* ── ÉTAT ───────────────────────────────────────────── */
   var KEY_DAYS   = "paliers_v2";
   var KEY_CFG    = "paliers_cfg_v2";
-  var CFG_VERSION= 3;
+  var CFG_VERSION= 4;
   var state      = {days:{}};
   var cfg        = {version:CFG_VERSION, params:copy(DPARAMS), objectifs:DOBJ.map(copy)};
   var editOb   = [], editPtmp = {};
@@ -379,7 +379,7 @@
         if(s.objectifs&&s.objectifs.length) cfg.objectifs=s.objectifs;
         if(s.version!==CFG_VERSION){
           cfg.version=CFG_VERSION;
-          cfg.params.jours=DPARAMS.jours;
+          cfg.params=copy(DPARAMS);
           cfg.objectifs=DOBJ.map(copy);
           saveCfg();
         }
@@ -714,13 +714,13 @@
     editPtmp  = copy(cfg.params);
 
     var parDef=[
-      {id:"sp-base",    lbl:"Base dépenses (équilibre net) €", val:editPtmp.base},
+      {id:"sp-base",    lbl:"Base dépenses (équilibre net) €", val:Number(editPtmp.base).toFixed(2)},
       {id:"sp-jours",   lbl:"Jours travaillés",                val:editPtmp.jours},
       {id:"sp-consult", lbl:"Net / consultation €",            val:editPtmp.netParConsult},
       {id:"sp-urssaf",  lbl:"Taux URSSAF %",                   val:(editPtmp.tauxURSSAF*100).toFixed(2)},
       {id:"sp-carmf",   lbl:"Taux CARMF %",                    val:(editPtmp.tauxCARMF*100).toFixed(2)},
       {id:"sp-abat",    lbl:"Abattement micro-BNC %",          val:(editPtmp.abattement*100).toFixed(2)},
-      {id:"sp-biacq",   lbl:"Base imposable acquise €",        val:editPtmp.baseImposableAcquise},
+      {id:"sp-biacq",   lbl:"Base imposable acquise €",        val:Number(editPtmp.baseImposableAcquise).toFixed(2)},
       {id:"sp-plafond", lbl:"Plafond tranche 30 % €",          val:editPtmp.plafond30}
     ];
 
