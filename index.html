@@ -346,21 +346,20 @@
 
   /* ── VALEURS PAR DÉFAUT ─────────────────────────────── */
   var DPARAMS = {
-    base:26394.60, jours:70, netParConsult:24,
+    base:34334.60, jours:70, netParConsult:24,
     tauxURSSAF:0.12, tauxCARMF:0.12, abattement:0.34,
     baseImposableAcquise:60024.17, plafond30:84577
   };
   var DOBJ = [
     {id:"1", nom:"0 €",      offset:0    },
     {id:"2", nom:"5 000 €",  offset:5000 },
-    {id:"3", nom:"10 000 €", offset:10000},
-    {id:"4", nom:"15 000 €", offset:15000}
+    {id:"3", nom:"10 000 €", offset:10000}
   ];
 
   /* ── ÉTAT ───────────────────────────────────────────── */
   var KEY_DAYS   = "paliers_v2";
   var KEY_CFG    = "paliers_cfg_v2";
-  var CFG_VERSION= 4;
+  var CFG_VERSION= 5;
   var state      = {days:{}};
   var cfg        = {version:CFG_VERSION, params:copy(DPARAMS), objectifs:DOBJ.map(copy)};
   var editOb   = [], editPtmp = {};
